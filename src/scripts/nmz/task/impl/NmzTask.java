@@ -1,6 +1,7 @@
 package scripts.nmz.task.impl;
 
 import org.powerbot.script.*;
+import org.powerbot.script.ClientAccessor;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt4.*;
 import org.powerbot.script.rt4.ClientContext;
@@ -44,10 +45,9 @@ public class NmzTask extends Task {
 
         }
         //first drink overload
-        if(shouldOverload) {
+        if(shouldOverload()) {
             Potion.OVERLOAD.drink(ctx);
-            shouldOverload = false;
-
+            Condition.sleep(Random.nextInt(6000, 7600));
             //randomly check stats
             //rs only sends a packet when switching tabs so hovering skills etc is pointless
             if(Math.random() < .25) {
@@ -56,12 +56,16 @@ public class NmzTask extends Task {
                 ctx.game.tab(Game.Tab.INVENTORY);
             }
 
+            shouldOverload = false;
+
             while(shouldRockCake()) {//initializing rock rake/doing after overload
                 eatRockCake(false);
             }
 
         }
         if(corner == null)
+            walkToCorner();
+        else if(corner.distanceTo(ctx.players.local()) > 50) //new NMZ
             walkToCorner();
 
 
@@ -72,7 +76,7 @@ public class NmzTask extends Task {
     }
 
     public boolean shouldRockCake() {
-        return !shouldOverload && ctx.combat.health() > 1;
+        return !shouldOverload() && ctx.combat.health() > 1;
     }
 
 
@@ -83,7 +87,7 @@ public class NmzTask extends Task {
         if(widgetText.equals(""))
             return true;
         int currAbsorb = Integer.parseInt(widgetText);
-        //System.out.println("Curr Absorb " +currAbsorb+  "Next: "+nextAbsorb);
+        System.out.println("Curr Absorb " +currAbsorb+  "Next: "+nextAbsorb);
         return currAbsorb < nextAbsorb;
     }
 
@@ -93,11 +97,11 @@ public class NmzTask extends Task {
     private void eatRockCake(boolean delay) {
         if(delay)
             Condition.sleep(Random.nextInt(3000, 7000));
-        if(shouldOverload) //don't override the overload
-            return;
         Item rockCake = ctx.inventory.select().id(Configuration.ROCK_CAKE_ID).poll();
         rockCake.hover();
         Condition.sleep(Random.nextInt(25, 50));
+        if(!shouldRockCake()) //don't override the overload
+            return;
         rockCake.interact("Guzzle");
         //wait until done guzzling
         Condition.sleep(Random.nextInt(100, 175));
@@ -122,6 +126,18 @@ public class NmzTask extends Task {
                 return local.tile().equals(corner);
             }
         }, 200, 15);
+    }
+
+    private boolean shouldOverload() {
+        return ctx.combat.health() > 50 || shouldOverload;
+    }
+
+    public void handleOverloadMessage() {
+        shouldOverload = true;
+    }
+
+    public void handleRestart() {
+        corner = null;
     }
 
 

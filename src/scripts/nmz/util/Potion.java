@@ -15,7 +15,6 @@ public enum Potion {
     OVERLOAD(11730, 11731, 11732, 11733) {
         @Override public void drink(final ClientContext ctx) {
             super.drink(ctx);
-            Condition.sleep(Random.nextInt(4600, 6000));
         }
     };
 

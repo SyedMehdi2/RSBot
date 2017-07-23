@@ -1,6 +1,7 @@
 package scripts.nmz;
 
 import org.powerbot.script.*;
+import org.powerbot.script.rt4.Bank;
 import org.powerbot.script.rt4.ClientContext;
 import scripts.nmz.gui.Frame;
 import scripts.nmz.gui.PaintManager;
@@ -56,8 +57,10 @@ public class NightmareZone extends PollingScript<ClientContext> implements Paint
     @Override
     public void poll() {
         //this means the player hasn't hit "start" yet
-        if(config == null)
+        if(config == null) {
+            System.out.println("No config");
             return;
+        }
 
         //this means that the other tasks haven't been loaded yet
         if(tasks.isEmpty()) {
@@ -66,8 +69,9 @@ public class NightmareZone extends PollingScript<ClientContext> implements Paint
         }
         //run tasks
         for(Task task : tasks) {
-            if(task.activate())
+            if(task.activate()) {
                 task.execute();
+            }
         }
 
     }
@@ -99,10 +103,18 @@ public class NightmareZone extends PollingScript<ClientContext> implements Paint
     @Override
     public void messaged(MessageEvent messageEvent) {
         //System.out.println(messageEvent.toString());
-        if (messageEvent.text().equals("<col=ef1020>The effects of overload have worn off, and you feel normal again.")) {
+        if (messageEvent.text().contains("overload")) {
             //this makes sure that NmzTask handles everything
             //too lazy to do it rihgt
-            ((NmzTask)tasks.get(0)).shouldOverload = true;
+            this.<NmzTask>get(0).handleOverloadMessage();
         }
+    }
+
+    private <T extends Task> T get(int index) {
+        return (T)(tasks.get(index));
+    }
+
+    public void resetTasks() {
+
     }
 }

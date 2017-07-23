@@ -1,6 +1,8 @@
 package scripts.nmz.task;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor;
 import org.powerbot.script.ClientAccessor;
+import org.powerbot.script.PollingScript;
 import org.powerbot.script.rt4.ClientContext;
 
 /**

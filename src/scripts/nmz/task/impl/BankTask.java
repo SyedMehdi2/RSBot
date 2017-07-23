@@ -145,6 +145,8 @@ public class BankTask extends Task {
         //click on interface
 
         ctx.widgets.component(129, 6).interact("Continue");
+
+
         //wait to load in
         Condition.sleep(Random.nextInt(3500, 4500));
 
