@@ -93,6 +93,8 @@ public class NmzTask extends Task {
     private void eatRockCake(boolean delay) {
         if(delay)
             Condition.sleep(Random.nextInt(3000, 7000));
+        if(shouldOverload) //don't override the overload
+            return;
         Item rockCake = ctx.inventory.select().id(Configuration.ROCK_CAKE_ID).poll();
         rockCake.hover();
         Condition.sleep(Random.nextInt(25, 50));
