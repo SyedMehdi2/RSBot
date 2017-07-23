@@ -27,7 +27,7 @@ public class PaintManager extends ClientAccessor<ClientContext> {
 
         g.setColor(Color.BLACK);
 
-        g.drawRect(4, 2784 , 250, 60);
+        g.drawRect(4, 278 , 250, 60);
 
         g.setColor(color);
 
