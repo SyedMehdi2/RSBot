@@ -47,7 +47,6 @@ public class NmzTask extends Task {
         //first drink overload
         if(shouldOverload()) {
             Potion.OVERLOAD.drink(ctx);
-            Condition.sleep(Random.nextInt(6000, 7600));
             //randomly check stats
             //rs only sends a packet when switching tabs so hovering skills etc is pointless
             if(Math.random() < .25) {
